@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasyno Online - Ruletka</title>
+    <style>
+        body {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: gold;
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+        }
+        .balance {
+            margin: 20px;
+            font-size: 20px;
+        }
+        .game-area {
+            margin-top: 30px;
+        }
+        .roulette-wheel {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, red 50%, black 50%);
+            margin: 20px auto;
+            position: relative;
+            transition: transform 3s ease-out;
+        }
+        .spin-btn {
+            background-color: crimson;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .spin-btn:hover {
+            background-color: darkred;
+        }
+        .bet-input {
+            width: 80px;
+            padding: 5px;
+            font-size: 16px;
+            text-align: center;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Kasyno Online - Ruletka</div>
+
+    <div class="balance">Twój balans: <span id="balance">1000</span> $</div>
+
+    <div class="game-area">
+        <div class="roulette-wheel" id="wheel"></div>
+        <input type="number" class="bet-input" id="betAmount" placeholder="Zakład $" min="1">
+        <input type="number" class="bet-input" id="betNumber" placeholder="Liczba 0-36" min="0" max="36">
+        <button class="spin-btn" onclick="spinWheel()">Zakręć!</button>
+    </div>
+
+    <script>
+        let balance = 1000;
+
+        function spinWheel() {
+            let betAmount = parseInt(document.getElementById('betAmount').value);
+            let betNumber = parseInt(document.getElementById('betNumber').value);
+            
+            if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance) {
+                alert("Nieprawidłowa kwota zakładu!");
+                return;
+            }
+            if (isNaN(betNumber) || betNumber < 0 || betNumber > 36) {
+                alert("Podaj liczbę od 0 do 36!");
+                return;
+            }
+
+            // Odejmowanie zakładu od balansu
+            balance -= betAmount;
+            document.getElementById('balance').textContent = balance;
+
+            // Losowanie liczby i obrót koła
+            let winningNumber = Math.floor(Math.random() * 37);
+            let wheel = document.getElementById('wheel');
+            let spinDegrees = Math.floor(Math.random() * 3600) + 1440; // Min. 4 obroty
+            wheel.style.transform = `rotate(${spinDegrees}deg)`;
+
+            // Opóźniona wiadomość po obrocie (3 sekundy)
+            setTimeout(() => {
+                alert("Wylosowana liczba: " + winningNumber);
+                if (winningNumber === betNumber) {
+                    let winnings = betAmount * 36;
+                    balance += winnings;
+                    alert("Wygrałeś " + winnings + " $!");
+                } else {
+                    alert("Przegrałeś!");
+                }
+                document.getElementById('balance').textContent = balance;
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
